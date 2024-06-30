@@ -8,6 +8,17 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = AppFactory::create();
 
+/**
+ * @param string $data
+ * @return string
+ */
+function build_sse_event_response_string(string $data): string {
+    /**
+     * @todo figure out what to do if there's a "\n\n" in the data string
+     */
+    return "event: message\ndata:$data\n\n";
+}
+
 $app->get('/', function (Request $request, Response $response, $args) {
     $response = $response->withHeader('Content-Type', 'text/html');
 
@@ -29,18 +40,20 @@ $app->get('/', function (Request $request, Response $response, $args) {
 });
 
 $app->get('/sse', function (Request $request, Response $response, $args) {
+    // set to some reasonable value (default is 30s, if not set)
+    // .. when time limit is hit, request ends and client will have to reconnect
+    // .. with SSE, re-connection should happen automatically
     set_time_limit(400);
 
     $response = $response
-        ->withBody(new \Slim\Psr7\NonBufferedBody())
+        ->withBody(new \Slim\Psr7\NonBufferedBody()) // don't buffer, stream output
         ->withHeader('Content-Type', 'text/event-stream')
         ->withHeader('Cache-Control', 'no-cache');
 
     $body = $response->getBody();
 
     for($i=0; $i<100; $i++) {
-        $body->write("event: message\n");
-        $body->write("data:" . "\$i is currently equal to: $i\n\n");
+        $body->write(build_sse_event_response_string("\$i is currently equal to: $i"));
 
         if(connection_aborted()) {
             break;
