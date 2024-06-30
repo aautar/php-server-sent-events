@@ -1,5 +1,5 @@
 {
-    "name": "av/php-stateless-sse",
+    "name": "av/php-server-sent-events",
     "autoload": {
         "psr-4": {
             "Av\\PhpStatelessSse\\": "src/"

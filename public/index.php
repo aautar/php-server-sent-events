@@ -40,7 +40,7 @@ $app->get('/sse', function (Request $request, Response $response, $args) {
 
     for($i=0; $i<100; $i++) {
         $body->write("event: message\n");
-        $body->write("data:" . "I is current equal to: $i\n\n");
+        $body->write("data:" . "\$i is currently equal to: $i\n\n");
 
         if(connection_aborted()) {
             break;
