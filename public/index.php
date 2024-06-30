@@ -12,11 +12,11 @@ $app = AppFactory::create();
  * @param string $data
  * @return string
  */
-function build_sse_event_response_string(string $data): string {
+function build_sse_event_response_string(string $id, string $data): string {
     /**
      * @todo figure out what to do if there's a "\n\n" in the data string
      */
-    return "event: message\ndata:$data\n\n";
+    return "id:$id\nevent: message\ndata:$data\n\n";
 }
 
 $app->get('/', function (Request $request, Response $response, $args) {
@@ -53,7 +53,7 @@ $app->get('/sse', function (Request $request, Response $response, $args) {
     $body = $response->getBody();
 
     for($i=0; $i<100; $i++) {
-        $body->write(build_sse_event_response_string("\$i is currently equal to: $i"));
+        $body->write(build_sse_event_response_string(sha1($i . time()), "\$i is currently equal to: $i"));
 
         if(connection_aborted()) {
             break;
