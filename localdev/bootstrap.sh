@@ -49,5 +49,12 @@ go env -w GO111MODULE=auto
 go build -buildvcs=false
 
 # Generate wildcard cert
-./minica --ca-cert "$CA_CERT" --ca-key "$CA_KEY" --domains "$WILDCARD_CERT"
+if [ -f "$CA_CERT" ] && [ -f "$CA_KEY" ]; then
+  echo "Generating site certificate (using given root certificate)"
+  ./minica --ca-cert "$CA_CERT" --ca-key "$CA_KEY" --domains "$WILDCARD_CERT"
+else
+  echo "Generating site certificate (creating new root certificate)"
+  ./minica --domains "$WILDCARD_CERT"
+fi
+
 cp -R "/tools/minica/$CERT_FOLDER" "/certs/$CERT_FOLDER"
