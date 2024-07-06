@@ -1,6 +1,4 @@
 $startScript = <<START_SCRIPT
-sudo apachectl configtest
-sudo service apache2 reload
 sudo service apache2 restart
 START_SCRIPT
 
