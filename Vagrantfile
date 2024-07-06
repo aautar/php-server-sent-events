@@ -1,5 +1,4 @@
 $startScript = <<START_SCRIPT
-sudo service apache2 reload
 sudo service apache2 restart
 START_SCRIPT
 
